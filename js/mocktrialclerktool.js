@@ -10,7 +10,15 @@
 var MTClerkTool = (function() {
     /**********
      * config */
-    var calibTime = 15; //seconds spent calibrating
+    var calibTime = 3; //seconds spent calibrating
+    var timerDefns = [
+        [6*60, 'D-Pret'],
+        [6*60, 'P-Pret'],
+        [9*60, 'P-OpCl'],
+        [9*60, 'D-OpCl'],
+        [14*60, 'P-Drct'],
+        [14*60, 'D-Drct']
+    ];
 
     /*************
      * constants */
@@ -26,23 +34,41 @@ var MTClerkTool = (function() {
         //calibrate the timers
         testTimer(calibTime, function(g, a) {
             var errPerSec = (a-g)/g;
-            calibratedDelay = 1000*(1-errPerSec);
+            calibratedDelay = Math.floor(1000*(1-errPerSec));
 
             //init timers
             timers = [];
-            timers.push(
-                new Timer(61, calibratedDelay, function(self) {
-                    $s('#time').innerHTML = self.format();
-                })
-            );
-            timers[0].start();
+            for (var ti = 0; ti < timerDefns.length; ti++) {
+                //the html
+                var div = document.createElement('div');
+                div.id = 'timer'+ti;
+                div.innerHTML = timerDefns[ti][1]+' '+
+                    '<input id="time'+ti+
+                    '" type="button" value="00:00">';
+                document.body.appendChild(div);
+
+                //the js
+                timers.push(
+                    new Timer(timerDefns[ti][0], calibratedDelay,
+                        (function(idx) {
+                            return function(self) {
+                                $s('#time'+idx).value = self.format();
+                            };
+                        })(ti)
+                    )
+                );
+
+                //user control
+                $s('#time'+ti).addEventListener('click', (function(idx) {
+                    return function() {
+                        timers[idx].startStop();
+                    };
+                })(ti));
+            }
 
             //user control
-            $s('#start').addEventListener('click', function() {
-                timers[0].start();
-            });
-            $s('#stop').addEventListener('click', function() {
-                timers[0].stop();
+            $s('#startstop').addEventListener('click', function() {
+                timers[0].startStop();
             });
 
             //tests
@@ -68,12 +94,12 @@ var MTClerkTool = (function() {
                 }
             };
         })(start));
-        tmr.start();
+        tmr.startStop();
 
         setTimeout(function() {
-            tmr.stop();
+            tmr.startStop();
             setTimeout(function() {
-                tmr.start();
+                tmr.startStop();
             }, gapLen);
         }, g/(2+0.3*Math.random()));
     }
@@ -87,13 +113,19 @@ var MTClerkTool = (function() {
         this.locked = true;
         this.secBeganAt = -1;
         this.lockedAt = -1;
-    }
-    Timer.prototype.start = function() {
+
         var self = this;
-        if (this.locked) { //only if it's currently stopped
+        this.func(self); //first function call
+    }
+    Timer.prototype.startStop = function() {
+        var self = this;
+        if (this.locked) { //stopped? then start it
             this.timeLeft += 1;
             this.locked = false;
             self.countDown(this.delay - (this.lockedAt - this.secBeganAt));
+        } else { //currently counting down? stop it
+            this.locked = true;
+            this.lockedAt = +new Date();
         }
     };
     Timer.prototype.countDown = function(delay) {
@@ -109,12 +141,6 @@ var MTClerkTool = (function() {
             setTimeout(function() {
                 self.countDown();
             }, delay - (funEnd - funStart));
-        }
-    };
-    Timer.prototype.stop = function() {
-        if (!this.locked) {
-            this.locked = true;
-            this.lockedAt = +new Date();
         }
     };
     Timer.prototype.format = function() {
