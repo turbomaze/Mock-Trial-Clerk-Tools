@@ -2,7 +2,7 @@
 |    Mock Trial    |
 |    Clerk Tool    |
 | @author Anthony  |
-| @version 0.1     |
+| @version 1.0     |
 | @date 2015/01/08 |
 | @edit 2015/01/08 |
 \******************/
@@ -21,9 +21,9 @@ var MTClerkTool = (function() {
         [9*60, 'Def-Opng/Clsn'],
 
         [14*60, 'Pro-Direct'],
-        [14*60, 'Def-Cross'],
+        [10*60, 'Def-Cross'],
         [14*60, 'Def-Direct'],
-        [14*60, 'Pro-Cross'],
+        [10*60, 'Pro-Cross'],
 
         [1*60, 'Pro-Clsn Rbtl'],
         [1*60, 'Def-Clsn Rbtl']
