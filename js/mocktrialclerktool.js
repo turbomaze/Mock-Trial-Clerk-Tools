@@ -21,13 +21,24 @@ var MTClerkTool = (function() {
     /******************
      * work functions */
     function initMTClerkTool() {
+        //init timers
         timers = [];
         timers.push(
             new Timer(61, function(self) {
                 $s('#time').innerHTML = self.format();
             })
         );
-        timers[0].countDown();
+        timers[0].start();
+
+        //user control
+        $s('#start').addEventListener('click', function() {
+            timers[0].start();
+        });
+        $s('#stop').addEventListener('click', function() {
+            timers[0].stop();
+        });
+
+        //tests
         testTimer(5);
         testTimer(10);
         testTimer(60);
@@ -45,24 +56,36 @@ var MTClerkTool = (function() {
                 }
             };
         })(start));
-        tmr.countDown();
+        tmr.start();
     }
 
     /***********
      * objects */
     function Timer(t, f) {
-        this.timeLeft = t+1;
+        this.timeLeft = t;
         this.func = f || false;
+        this.locked = true;
     }
+    Timer.prototype.start = function() {
+        var self = this;
+        if (this.locked) { //only if it's currently stopped
+            this.timeLeft += 1;
+            this.locked = false;
+            self.countDown();
+        }
+    };
     Timer.prototype.countDown = function() {
         var self = this;
-        if (this.timeLeft > 0) {
+        if (this.timeLeft > 0 && !this.locked) {
             this.timeLeft -= 1;
             if (this.func) this.func(self);
             setTimeout(function() {
                 self.countDown();
             }, 1000);
         }
+    };
+    Timer.prototype.stop = function() {
+        if (!this.locked) this.locked = true;
     };
     Timer.prototype.format = function() {
         var m = Math.floor(this.timeLeft/60);
