@@ -2,12 +2,26 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
         <title>Mock Trial - Clerk Tool</title>
 
         <link href="css/style.css" rel="stylesheet" type="text/css">
         <script src="js/mocktrialclerktool.js"></script>
     </head>
     <body>
-        <div id="time"></div>
+        <div id="controls">
+            <input type="number" id="min" placeholder="min" min="0">
+            <input type="number" id="sec" placeholder="sec" min="0" max="59">
+            <select id="section"></select>
+            <br style="clear: both;">
+            <input type="button" id="set-time-btn" value="Set">
+            <div id="calib-notice" style="text-align: center">
+                <br>
+                Calibrating timer
+                <br>
+                <img style="width: 2.5em; margin-top: 0.25em" src="css/loader.gif">
+            </div>
+        </div>
+        <div id="container"></div>
     </body>
 </html>

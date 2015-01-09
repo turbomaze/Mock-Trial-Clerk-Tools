@@ -2,4 +2,58 @@
 body {
     background-color: #272822;
     color: #FFFFF4;
+    font-family: Sans-serif, Arial;
+    font-size: 1.2em;
+}
+
+select {
+    font-size: 0.9em;
+    width: 45%;
+    float: right;
+}
+
+#min, #sec {
+    width: 3.4em;
+    float: left;
+    font-size: 0.9em;
+}
+#min {
+    margin-right: 0.2em;
+}
+
+#set-time-btn {
+    width: 100%;
+    font-size: 0.9em;
+    margin-top: 0.1em;
+}
+
+#controls {
+    margin-bottom: 0.75em;
+    width: 100%;
+    max-width: 16em;
+}
+
+#container {
+    width: 100%;
+    max-width: 32em;
+}
+
+.timer {
+    width: 7.4em;
+    float: left;
+    margin-right: 0.25em;
+    margin-bottom: 0.25em;
+}
+
+input[type="button"] {
+    width: 95%;
+    font-size: 1.2em;
+}
+
+.locked {
+    color: black;
+}
+
+.unlocked {
+    color: red;
 }
