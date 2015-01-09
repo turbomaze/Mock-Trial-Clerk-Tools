@@ -10,7 +10,7 @@
 var MTClerkTool = (function() {
     /**********
      * config */
-    var calibTime = 3; //seconds spent calibrating
+    var calibTime = 5; //seconds spent calibrating
     var timerDefns = [
         [4*60, 'Def-Pret Stmt'],
         [4*60, 'Pro-Pret Stmt'],
@@ -96,12 +96,21 @@ var MTClerkTool = (function() {
 
             //timer control
             $s('#set-time-btn').addEventListener('click', function() {
-                var numSec = parseInt($s('#min').value || 0)*60;
-                numSec += parseInt($s('#sec').value || 0);
-                if (numSec < 0 || numSec === undefined) numSec = 0;
-                var idx = parseInt($s('#section').value);
-                timers[idx].timeLeft = numSec;
-                $s('#time'+idx).value = timers[idx].format();
+                var m = parseInt($s('#min').value || 0);
+                if (m >= 100) { //reset condition
+                    //reset all the times
+                    for (var ti = 0; ti < timerDefns.length; ti++) {
+                        timers[ti].timeLeft = timerDefns[ti][0];
+                        $s('#time'+ti).value = timers[ti].format();
+                    }
+                } else {
+                    var s = parseInt($s('#sec').value || 0);
+                    var numSec = 60*m + s;
+                    if (numSec < 0 || numSec === undefined) numSec = 0;
+                    var idx = parseInt($s('#section').value);
+                    timers[idx].timeLeft = numSec;
+                    $s('#time'+idx).value = timers[idx].format();
+                }
             });
 
             //tests
