@@ -12,13 +12,23 @@ var MTClerkTool = (function() {
      * config */
     var calibTime = 3; //seconds spent calibrating
     var timerDefns = [
-        [6*60, 'D-Pret'],
-        [6*60, 'P-Pret'],
-        [9*60, 'P-OpCl'],
-        [9*60, 'D-OpCl'],
-        [14*60, 'P-Drct'],
-        [14*60, 'D-Drct']
+        [4*60, 'Def-Pret Stmt'],
+        [4*60, 'Pro-Pret Stmt'],
+        [2*60, 'Def-Pret Rbtl'],
+        [2*60, 'Pro-Pret Rbtl'],
+
+        [9*60, 'Pro-Opng/Clsn'],
+        [9*60, 'Def-Opng/Clsn'],
+
+        [14*60, 'Pro-Direct'],
+        [14*60, 'Def-Cross'],
+        [14*60, 'Def-Direct'],
+        [14*60, 'Pro-Cross'],
+
+        [1*60, 'Pro-Clsn Rbtl'],
+        [1*60, 'Def-Clsn Rbtl']
     ];
+    var gapLen = 3000; //ms gap inserted halfway when testing the timer
 
     /*************
      * constants */
@@ -31,6 +41,14 @@ var MTClerkTool = (function() {
     /******************
      * work functions */
     function initMTClerkTool() {
+        //populate the select
+        for (var ti = 0; ti < timerDefns.length; ti++) {
+            var option = document.createElement('option');
+            option.value = ti;
+            option.innerHTML = timerDefns[ti][1];
+            $s('#section').appendChild(option);
+        }
+
         //calibrate the timers
         testTimer(calibTime, function(g, a) {
             var errPerSec = (a-g)/g;
@@ -42,10 +60,12 @@ var MTClerkTool = (function() {
                 //the html
                 var div = document.createElement('div');
                 div.id = 'timer'+ti;
-                div.innerHTML = timerDefns[ti][1]+' '+
+                div.className = 'timer';
+                div.innerHTML = '<div>'+timerDefns[ti][1]+'</div>'+
                     '<input id="time'+ti+
                     '" type="button" value="00:00">';
-                document.body.appendChild(div);
+                //$s('#col'+(ti%2)).appendChild(div);
+                $s('#container').appendChild(div);
 
                 //the js
                 timers.push(
@@ -66,9 +86,14 @@ var MTClerkTool = (function() {
                 })(ti));
             }
 
-            //user control
-            $s('#startstop').addEventListener('click', function() {
-                timers[0].startStop();
+            //timer control
+            $s('#set-time-btn').addEventListener('click', function() {
+                var numSec = parseInt($s('#min').value || 0)*60;
+                numSec += parseInt($s('#sec').value || 0);
+                if (numSec < 0 || numSec === undefined) numSec = 0;
+                var idx = parseInt($s('#section').value);
+                timers[idx].timeLeft = numSec;
+                $s('#time'+idx).value = timers[idx].format();
             });
 
             //tests
@@ -79,7 +104,8 @@ var MTClerkTool = (function() {
     }
 
     function testTimer(g, callback) { //g is goal in seconds
-        var gapLen = 3000; //ms gap inserted halfway
+        callback = callback || false;
+
         var start = +new Date();
         var tmr = new Timer(g, 1000, (function(s) {
             return function(self) {
