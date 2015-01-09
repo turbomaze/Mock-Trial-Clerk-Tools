@@ -54,6 +54,9 @@ var MTClerkTool = (function() {
             var errPerSec = (a-g)/g;
             calibratedDelay = Math.floor(1000*(1-errPerSec));
 
+            //clear "calibrating..."
+            $s('#controls').removeChild($s('#calib-notice'));
+
             //init timers
             timers = [];
             for (var ti = 0; ti < timerDefns.length; ti++) {
@@ -64,7 +67,6 @@ var MTClerkTool = (function() {
                 div.innerHTML = '<div>'+timerDefns[ti][1]+'</div>'+
                     '<input id="time'+ti+
                     '" type="button" value="00:00">';
-                //$s('#col'+(ti%2)).appendChild(div);
                 $s('#container').appendChild(div);
 
                 //the js

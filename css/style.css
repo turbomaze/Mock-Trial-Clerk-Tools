@@ -29,6 +29,13 @@ select {
 
 #controls {
     margin-bottom: 0.75em;
+    width: 100%;
+    max-width: 16em;
+}
+
+#container {
+    width: 100%;
+    max-width: 32em;
 }
 
 .timer {
