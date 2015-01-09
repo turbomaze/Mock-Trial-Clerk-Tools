@@ -81,6 +81,12 @@ var MTClerkTool = (function() {
                 //user control
                 $s('#time'+ti).addEventListener('click', (function(idx) {
                     return function() {
+                        var cns = $s('#time'+idx).className;
+                        if (cns.indexOf('unlocked') !== -1) {
+                            $s('#time'+idx).className = 'locked';
+                        } else {
+                            $s('#time'+idx).className = 'unlocked';
+                        }
                         timers[idx].startStop();
                     };
                 })(ti));

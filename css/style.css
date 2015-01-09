@@ -6,11 +6,6 @@ body {
     font-size: 1.2em;
 }
 
-input[type="button"] {
-    width: 95%;
-    font-size: 1.2em;
-}
-
 select {
     font-size: 0.9em;
     width: 45%;
@@ -37,8 +32,21 @@ select {
 }
 
 .timer {
-    width: 7.2em;
+    width: 7.4em;
     float: left;
     margin-right: 0.25em;
-    margin-bottom: 0.5em;
+    margin-bottom: 0.25em;
+}
+
+input[type="button"] {
+    width: 95%;
+    font-size: 1.2em;
+}
+
+.locked {
+    color: black;
+}
+
+.unlocked {
+    color: red;
 }
