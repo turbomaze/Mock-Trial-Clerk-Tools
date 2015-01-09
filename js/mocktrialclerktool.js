@@ -223,3 +223,13 @@ var MTClerkTool = (function() {
 window.addEventListener('load', function() {
     MTClerkTool.init();
 });
+
+window.addEventListener('beforeunload', function(e) {
+    var message = 'Are you sure you want to exit this timer page? '+
+        'All times will be erased.';
+    e = e || window.event;
+    if (e) {
+        e.returnValue = message;
+    }
+    return message;
+});
